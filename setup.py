@@ -1,7 +1,8 @@
-# Version: 0.12
-# Date: 2022/07/12
+# Version: 0.13
+# Date: 2022/07/13
 
 import os
+import time
 from configparser import ConfigParser
 
 from PIL import Image, ImageDraw, ImageFont
@@ -10,6 +11,7 @@ from PIL import Image, ImageDraw, ImageFont
 def read_config(config_path):
     cfg = ConfigParser()
     cfg.read(config_path)
+
     tbp = cfg.get('path', 'tbp')
     save = cfg.get('path', 'save')
     width = cfg.get('img', 'width')
@@ -33,7 +35,7 @@ def img_process(tbp, save, width, height, time_text, location_text, font_size, s
     for root, ds, fs in os.walk(tbp):
         for f in fs:
             fullname = os.path.join(root, f)
-            print('正在处理:' + fullname)
+            print('正在处理: [{}]' .format(fullname))
             image = Image.open(fullname)
             draw = ImageDraw.Draw(image)
             font = ImageFont.truetype(r'./yahei.ttf', font_size)
@@ -43,15 +45,14 @@ def img_process(tbp, save, width, height, time_text, location_text, font_size, s
             # draw.text((img_height, img_width), '今日水印\n相机\n真实时间', font=font, align='center')
             image.save(save + '/' + save_file_name + f)
             counter = counter + 1
-            print('完成')
+            print('[{}]: [{}] 已完成 \n' .format(time.strftime('%Y/%m/%d %H:%M:%S', time.localtime()), fullname))
 
     return counter
 
 
-def main():
-    config_path = './config.ini'  # 配置文件位置
+def main(cfg_path):
     tbp, save, width, height, time_text, location_text, font_size, save_file_name, \
-        = read_config(config_path)
+        = read_config(cfg_path)
     print('Version: 0.11 0712\n源文件目录: {}\n保存目录: {}'.format(tbp, save))
     print('字号设置: {}\n'.format(font_size))
     counter = img_process(tbp, save, width, height, time_text, location_text,
@@ -60,4 +61,5 @@ def main():
     print('共处理 {} 张照片'.format(counter))
 
 
-main()
+config_path = './config.ini'  # 配置文件位置
+main(config_path)
