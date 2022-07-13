@@ -1,4 +1,4 @@
-# Version: 0.11
+# Version: 0.12
 # Date: 2022/07/12
 
 import os
@@ -17,14 +17,19 @@ def read_config(config_path):
     time_text = cfg.get('img', 'time_text')
     location_text = cfg.get('img', 'location_text')
     font_size = cfg.get('img', 'font_size')
-    save_file_name = cfg.get('img', 'savefilename')
+    save_file_name = cfg.get('img', 'save_file_name')
+
+    # 转化数据类型
     width = float(width)
     height = float(height)
     font_size = int(font_size)
+
     return tbp, save, width, height, time_text, location_text, font_size, save_file_name
 
 
 def img_process(tbp, save, width, height, time_text, location_text, font_size, save_file_name):
+    counter = 0
+
     for root, ds, fs in os.walk(tbp):
         for f in fs:
             fullname = os.path.join(root, f)
@@ -35,18 +40,24 @@ def img_process(tbp, save, width, height, time_text, location_text, font_size, s
             img_width = int(image.width - 20)
             img_height = int(image.height - 20)
             draw.text((20, 20), time_text + '\n' + location_text, font=font, align='left')
-            draw.text((img_height, img_width), '今日水印\n相机\n真实时间', font=font, align='center')
+            # draw.text((img_height, img_width), '今日水印\n相机\n真实时间', font=font, align='center')
             image.save(save + '/' + save_file_name + f)
+            counter = counter + 1
             print('完成')
 
-    return
+    return counter
 
 
 def main():
-    tbp, save, width, height, time_text, location_text, font_size, save_file_name = read_config('./config.ini')
-    print('Version: 0.11 0712\n源文件目录: {}\n保存目录: {}' .format(tbp, save))
-    print('字号设置: {}\n' .format(font_size))
-    img_process(tbp, save, width, height, time_text, location_text, font_size, save_file_name)
+    config_path = './config.ini'  # 配置文件位置
+    tbp, save, width, height, time_text, location_text, font_size, save_file_name, \
+        = read_config(config_path)
+    print('Version: 0.11 0712\n源文件目录: {}\n保存目录: {}'.format(tbp, save))
+    print('字号设置: {}\n'.format(font_size))
+    counter = img_process(tbp, save, width, height, time_text, location_text,
+                          font_size, save_file_name)
+
+    print('共处理 {} 张照片'.format(counter))
 
 
 main()
