@@ -1,10 +1,9 @@
-# Version: 0.13
-# Date: 2022/07/13
+# Version: 0.15
+# Date: 2022/07/16
 
 import os
 import time
 from configparser import ConfigParser
-
 from PIL import Image, ImageDraw, ImageFont
 
 
@@ -35,7 +34,7 @@ def img_process(tbp, save, width, height, time_text, location_text, font_size, s
     for root, ds, fs in os.walk(tbp):
         for f in fs:
             fullname = os.path.join(root, f)
-            print('正在处理: [{}]' .format(fullname))
+            print('正在处理: [{}]'.format(fullname))
             image = Image.open(fullname)
             draw = ImageDraw.Draw(image)
             font = ImageFont.truetype(r'./yahei.ttf', font_size)
@@ -45,7 +44,7 @@ def img_process(tbp, save, width, height, time_text, location_text, font_size, s
             # draw.text((img_height, img_width), '今日水印\n相机\n真实时间', font=font, align='center')
             image.save(save + '/' + save_file_name + f)
             counter = counter + 1
-            print('[{}]: [{}] 已完成 \n' .format(time.strftime('%Y/%m/%d %H:%M:%S', time.localtime()), fullname))
+            print('[{}]: [{}] 已完成 \n'.format(time.strftime('%Y/%m/%d %H:%M:%S', time.localtime()), fullname))
 
     return counter
 
